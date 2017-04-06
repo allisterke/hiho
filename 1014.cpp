@@ -2,24 +2,24 @@
 using namespace std;
 
 struct Trie {
-    array<Trie*, 26> next;
+    array<shared_ptr<Trie>, 26> next;
     int count;
     Trie() : next{}, count(0) {}
 };
 
 class Solution {
 private:
-    Trie *trie;
+    shared_ptr<Trie> trie;
 public:
     Solution() : trie(new Trie) {}
 
     void addWord(const string &word) {
-        Trie *t = trie;
+        auto t = trie;
         for(auto c : word) {
             ++ t->count;
             int index = c - 'a';
             if(t->next[index] == nullptr) {
-                t->next[index] = new Trie;
+                t->next[index] = shared_ptr<Trie>(new Trie);
             }
             t = t->next[index];
         }
@@ -27,7 +27,7 @@ public:
     }
 
     int countPrefix(const string &prefix) {
-        Trie *t = trie;
+        auto t = trie;
         for(auto c : prefix) {
             int index = c - 'a';
             t = t->next[index];
