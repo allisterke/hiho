@@ -20,7 +20,7 @@ public:
                         {x - 2, y + 1},
                         {x + 2, y + 1},
                 };
-                for (int k = 0; k < 8; ++k) {
+                for (int k = 0; k < 8; ++ k) {
                     if (p[k][0] >= 0 && p[k][0] < 8 && p[k][1] >= 0 && p[k][1] < 8) {
                         matrix[p[k][0] * 8 + p[k][1]][x * 8 + y] = 1;
                     }
@@ -31,17 +31,22 @@ public:
         unordered_map<int, vector<vector<LL>>> cache;
         auto result = power(matrix, N, cache);
 
-        vector<LL> init(64);
-        init[R * 8 + C] = 1;
-        vector<LL> finish(64);
-        for(int i = 0; i < 64; ++ i) {
-            for(int j = 0; j < 64; ++ j) {
-                finish[i] += init[j] * result[j][i];
-                finish[i] %= MOD;
-            }
-        }
+//        vector<LL> init(64);
+//        init[R * 8 + C] = 1;
+//        vector<LL> finish(64);
+//        for(int i = 0; i < 64; ++ i) {
+//            for(int j = 0; j < 64; ++ j) {
+//                finish[i] += init[j] * result[j][i];
+//                finish[i] %= MOD;
+//            }
+//        }
+//        LL total = accumulate(finish.begin(), finish.end(), 0LL);
 
-        LL total = accumulate(finish.begin(), finish.end(), 0LL);
+        vector<vector<LL>> init(1, vector<LL>(64));
+        init[0][R * 8 + C] = 1;
+        auto finish = mul(init, result);
+        LL total = accumulate(finish[0].begin(), finish[0].end(), 0LL);
+
         return total %= MOD;
     }
 
@@ -60,10 +65,10 @@ public:
     }
 
     vector<vector<LL>> mul(const vector<vector<LL>> &m1, const vector<vector<LL>> &m2) {
-        vector<vector<LL>> result(64, vector<LL>(64));
-        for(int i = 0; i < 64; ++ i) {
-            for(int j = 0; j < 64; ++ j) {
-                for(int k = 0; k < 64; ++ k) {
+        vector<vector<LL>> result(m1.size(), vector<LL>(m2[0].size()));
+        for(int i = 0; i < m1.size(); ++ i) {
+            for(int j = 0; j < m2[0].size(); ++ j) {
+                for(int k = 0; k < m2.size(); ++ k) { // m1[0].size() == m2.size()
                     result[i][j] += m1[i][k] * m2[k][j];
                     result[i][j] %= MOD;
                 }
